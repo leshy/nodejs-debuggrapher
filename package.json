@@ -1,0 +1,30 @@
+{
+  "name": "bombermanserverside",
+  "version": "0.0.0",
+  "description": "ERROR: No README.md file found!",
+  "main": "serverside.coffee",
+  "dependencies": {
+    "backbone4000": "git://github.com/leshy/backbone4000.git",
+    "bootstrap-browserify": "~2.1.1",
+    "async": "~0.2.8",
+    "underscore": "~1.4.4",
+    "mongodb": "~1.3.6",
+    "helpers": "git://github.com/leshy/nodejs-helpers.git",
+    "logger": "git://github.com/leshy/comm5-logger.git",
+    "comm": "git://github.com/leshy/nodejs-comm5.git",
+    "socket.io-browserify": "~0.9.6",
+    "d3-browser": "~2.10.3-1"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "swank": "node node_modules/swank-js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git@beefcake:repositories/bombermanserverside"
+  },
+  "author": "",
+  "license": "BSD",
+  "gitHead": "046254f08c2d9709187dab1bac8cb82d8736aefa"
+}
