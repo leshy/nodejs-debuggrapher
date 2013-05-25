@@ -67,17 +67,7 @@ initExpress = (env,callback) ->
         app.use express.favicon()
         app.use express.bodyParser()
         app.use express.methodOverride()
-        app.use express.cookieParser()
-
-        # /node_modules/connect/node_modules/crc/lib/crc.js
-        # 
-        # there is a bug in crc16 module,
-        # it checks for global.window object and concludes that its running in a browser and not node
-        # so it doesn't use exports object to expose its functions..
-        # I've patched it now, but on the next install it will fail again.
-        # 
-        # some other module is creating global.window for some reason, which is a refenrence to global
-        
+        app.use express.cookieParser()        
         app.use app.router
         app.use express.static(env.settings.express.static)
         app.use (err, req, res, next) ->
@@ -120,14 +110,13 @@ initWebsockets = (env,callback) ->
         host = socket.handshake.address.address
         env.log '', { id: socket.id, host: host }, 'socketio', 'connected', host, id
 
-
     callback undefined, true
 
 initListener = (env,callback) ->
     server = env.loglistener = dgram.createSocket 'udp4'
 
-    server.on "message", (msg, rinfo) -> 
-        env.websocket.msg new comm.Msg JSON.parse(msg)
+    server.on "message", (msg, rinfo) ->
+        env.websocket.msg msg = new comm.Msg JSON.parse(msg)
 
     server.on "listening", -> 
         address = server.address();
@@ -136,29 +125,6 @@ initListener = (env,callback) ->
         callback()
         
     server.bind(41234);
-
-initCollections = (env,callback) ->
-    ###
-
-    env.streams = new comm.MongoCollectionNode db: env.db, collection: 'streams'
-    env.streams.defineModel 'stream', comm.MsgNode
-        minspacing = 1000
-    
-        initialize: ->
-            @collection = env.db.collection @get('name')
-            
-        in: (data) -> true
-            
-        out: (timefrom, timeto, callback) ->
-
-            maxpoints = 50
-                        
-            @collection.find { time: { '$gt': timefrom, '$lt': timeto }}, (err,cursor) -> 
-                #cursor.count (err,count) ->
-    ###            
-        
-    callback()
-
 
 exports.init = (env,callback) ->
     async.auto 
@@ -172,3 +138,8 @@ exports.init = (env,callback) ->
 
 exports.init env, -> true
 
+grapher = require 'debuggrapher-probe'
+
+grapher.watch 'mem_self', 'rss', 500, -> process.memoryUsage().rss / 1048576
+grapher.watch 'mem_self', 'heapTotal', 500, -> process.memoryUsage().heapTotal / 1048576
+grapher.watch 'mem_self', 'heapUsed', 500, -> process.memoryUsage().heapUsed / 1048576
